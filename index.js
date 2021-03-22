@@ -4,7 +4,6 @@ const Book = require ("./models/bookModel")
 const bodyParser = require ('body-parser')
 const User= require("./models/userModel")
 
-
 const app = express()
 
 const connectDb = async() => {
