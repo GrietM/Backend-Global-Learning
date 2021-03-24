@@ -1,5 +1,0 @@
-dudas global learning --> NODE_JS
-
-1 - async/await--> a quien espera el await? (diapo 13 de clase 17)
-2- .then -> esta todo adentro de customer...?
-3- 
