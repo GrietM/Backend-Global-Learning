@@ -114,7 +114,7 @@ const usersController = (User) => {
       const {params} = req
       console.log(params)
       await User.findByIdAndDelete(params.userId)
-      return res.status(202).json({message:'El libro fue eliminado con éxito'})
+      return res.status(202).json({message:'El usuario fue eliminado con éxito'})
     }catch (err) {
       throw console.log('el error es: ' + err) //probar si esto esta funcionando! 
     }}
@@ -129,46 +129,34 @@ const usersController = (User) => {
         console.log("body",body)
         console.log("foundUser:" + foundUser) 
 
+        if (foundUser !== null){
 
         const isPswdCorrect = await bcrypt.compare(body.password, foundUser.password)
-        
-        
         console.log(isPswdCorrect)
+        if (isPswdCorrect){
 
-        // foundUser returns null if user is not there in collection with provided condition . If user found returns user document.
-        // if (foundUser !== null){
-//          if( foundUser && foundUser.password == req.body.password){ // tengo que reemplazar una parte de este if con el COMPARE de bcrypt!
-            
-            if (isPswdCorrect){
-//para generar el token
+          //para generar el token
             const tokenUser = {
               firstName: foundUser.firstName,
               lastName: foundUser.lastName,
               userName: foundUser.userName
             }
-           
-
             const token = jwt.sign(tokenUser, '123456marcela' , {expiresIn: 30});
 
-            return res.status(202).json({message:'OK', token: token})  
+            return res.status(202).json({message:'Login OK', token: token})  
+           
+           }
+           else {
+            return res.status(202).json({message:"Invalid Credentials"})
+           }
+
+            
             
           }
-         else /*if(!foundUser)*/{
-          return res.status(202).json({message: !foundUser ? 'Invalid user' : 'Credenciales inválidas'})
+         else {
+          return res.status(202).json({message: 'Invalid user'}) // credenciales invalidas no funciona... 
          }
-         /*
-          else{
-            return res.status(202).json({message:'Credenciales Invalidas'})
-         } */
-        
-        /*if (foundUser.userName === null){
-          return res.status(202).json({message:'Invalid user'})
-        }*/
-/*
-        else {
-          return res.status(202).json({message:'Invalid user'})
-        }*/
-          }
+         }
       catch (err){
         throw err
       }
