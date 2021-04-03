@@ -68,3 +68,11 @@ chequear que el mail sea unico? el usuario sea unico?
 puedo poner dos veces el mismo campo cuando hago un post y ni cuenta se va a dar
 
 los validadores de query y put temrinan siendo lo mismo y lo mismo que body pero sin los required.ver como hacerlo mas eficiente
+
+para usar los query string hay q ser estrcito con los espacios y las matusculas... ver si puedo ignorar esas cosas...
+
+quiero reutilizar el "encryptedpsw" y el "newUserName" del Post user en los PUT by ID. los puedo declarar como funciones fuera del método..?
+Al menos deberia volver a poner el encriptador! Sino los usuarios actualizados, si le cargo todos los campos quedan con la contraseña desencriptada!
+
+agregar validaciones de LOGIN! --> userName y password REQUIRED!
+

@@ -24,7 +24,7 @@ const routes = (User) => {
     .delete(validator.params(usersValidation.usersValidationParams),controller.deleteUserById)
 
   userRouter.route('/user/login') //ruta exclusiva para el login... podria ir directamente '/login, sin entrara al endpoint de user
-    .post(controller.postUserLogin)
+    .post(validator.body(usersValidation.usersValidationLogin),controller.postUserLogin)
 
   return userRouter
 }

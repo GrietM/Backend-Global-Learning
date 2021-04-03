@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 const usersController = (User) => {
+ 
   const getUsers = async (req,res) => {
     try {
       const {query} = req
@@ -25,7 +26,6 @@ const usersController = (User) => {
     const encryptedPsw = await bcrypt.hash(req.body.password, saltingNumber) 
     
     try {
-
       const {body} = req
 // porq no me lo toma si yo uso directamente las 
 //propiedades de adentro de req sin declarar la constante body y guardar esa info ahi?
@@ -45,20 +45,18 @@ const usersController = (User) => {
         }
 
      const userObject = 
-        {
-          firstName: body.firstName, 
-          lastName: body.lastName,
+        { ...body,
+          //firstName: body.firstName, 
+          //lastName: body.lastName,
           userName: newUserName(),
-          password: encryptedPsw,
-          email: body.email,
-          address: body.address,
-          phone: body.phone
+          password: encryptedPsw
+          //email: body.email,
+          //address: body.address,
+          //phone: body.phone
         }
-     
-      // aca quedaria mas prolijo si al userObject lo creo usando ...body (spread)  --> solo toco lo que voy a cambiar!
-      
+       
     const user = new User (userObject)
-    console.log("el usuario queda como: " , user)
+    //console.log("el usuario queda como: " , user)
 
     await user.save()
     return res.status(201).json(user)
@@ -90,16 +88,26 @@ const usersController = (User) => {
     }
   }
 
-  const putUserById = async(req,res) => {
+  const putUserById = async(req,res) => { //este controlador se puede mejorar con ...body y armando las funciones newUserName y encryptedPsw
+    //deberia volver a poner el encriptador! Sino los usuarios actualizados, si le cargo todos los campos quedan con la contraseña desencriptada!
+    // al agregar el encriptado se hace obligatorio ingresar algo en el campo de la contraseña cada vez que quiero actualizar un usuario porque sino se 
+    // rompe la funcion encryptedPsw porq necesita que se le pasen si o si los parametros data y salting
+    //quise poner un IF que se fije si existe la propiedad password en el body del PUT y sino ni entre a encriptar pero no me toma la condicion...
+    // en todo caso tendria que agregar a las validaciones del put que el password sea required en el body 
     try {
         const {params,body} = req
+        saltingNumber = 10
+        console.log(body.password)
+
+        // if (body.password){} no me esta tomando este if, quise preguntar si existe la propiedad en el body que viene del req...
+        //console.log(body.password)  
+        const encryptedPsw = await bcrypt.hash(req.body.password, saltingNumber)
         const response = await User.updateOne({
           _id: params.userId
         }, {
           $set: {
-            firstName: body.firstName,
-            lastName: body.lastName,
-            userName: (() => {
+            ...body,
+            userName: (() => {if (body.firstName & body.lastName){
               //Separo las palabras ingresadas en el nombre y apellido y las guardo en un arreglo
               let splitFirstName = body.firstName.split(" ")
               let splitLastName = body.lastName.split(" ")
@@ -110,12 +118,13 @@ const usersController = (User) => {
               }
               else{
               return body.firstName ? splitFirstName[0] : splitLastName[0]
+              }}
+              else{
+                return body.userName
               }
+
               })(),
-            password: body.password,
-            email:body.email,
-            address:body.address,
-            phone:body.phone
+            password: encryptedPsw,
           }
         })
     return res.status(202).json(response)
@@ -139,32 +148,26 @@ const usersController = (User) => {
       throw err
     }}
  
-    /// EMPIEZO A ARMAR EL NUEVO ENDPOINT PARA LOGIN
+    /// EMPIEZO A ARMAR EL NUEVO ENDPOINT PARA LOGIN --> se puede mejorar con funciones adentro!
     
    const postUserLogin = async (req,res) => {
       try {
         const {body} = req
         const foundUser = await User.findOne ({ "userName" : req.body.userName});
 
-        console.log("body",body)
-        console.log("foundUser:" + foundUser) 
+        //console.log("body",body)
+        //console.log("foundUser:" + foundUser) 
 
         if (foundUser !== null){
-
         const isPswdCorrect = await bcrypt.compare(body.password, foundUser.password)
-        console.log(isPswdCorrect)
+//        console.log(isPswdCorrect)
         if (isPswdCorrect){
-
-          //para generar el token
-            const tokenUser = {
-              firstName: foundUser.firstName,
-              lastName: foundUser.lastName,
-              userName: foundUser.userName
+            const generateToken = (foundUser) => {
+              return jwt.sign({...foundUser},'123456marcela')
             }
-            const token = jwt.sign(tokenUser, '123456marcela'); //,{expiresIn: 30}); lo dejo sin expirar para que no em este pidiendo volver a levantarlo todo el tiempo
+          
+            return res.status(202).json({message:'Login OK', token: generateToken(foundUser)})
 
-            return res.status(202).json({message:'Login OK', token: token})  
-           
            }
            else {
             return res.status(202).json({message:"Invalid Credentials"})

@@ -42,6 +42,12 @@ const usersValidationPut = Joi.object({
   phone: Joi.string().regex(/^\d{3}-\d{3}-\d{7}$/)
 }
 )
+
+const usersValidationLogin = Joi.object({
+  userName: Joi.string().required(),
+  password: Joi.string().required()}
+)
+
 //el schema del usersValidationPut termina siendo el del query pero lo tengo que usar con la propiedad body en el userRouter y queda como todo cruzado... ver de definir mejor los nombres ...
 
-module.exports = {usersValidationBody, usersValidationQuery ,usersValidationParams, usersValidationPut}
+module.exports = {usersValidationBody, usersValidationQuery ,usersValidationParams, usersValidationPut,usersValidationLogin}
