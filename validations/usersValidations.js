@@ -1,6 +1,6 @@
 const Joi = require ('joi')
 
-const usersValidation = Joi.object({
+const usersValidationBody = Joi.object({
   firstName: Joi.string().min(1).alphanum().required(), //no admite caracteres especiales--> alphanum es lo mismo que regex(/[a-zA-Z0-9$/)
   lastName: Joi.string().min(1).alphanum().required(), //con min(1) chequeo que no este vacio el campo
   userName: Joi.string(),//.required(), ---> no deberia ser required, porq lo creo con logica adentro del contrlador. siempre voy a pisar lo que ingrese el usuario, lo mas logico seria q ni se lo pida
@@ -12,9 +12,36 @@ const usersValidation = Joi.object({
   //no pude contemplar el signo + porque es un caracter especial q no se admite en las exp reg ..?
 })
 
-// este schema que esta creado asi tan "exigente" es solo para validar el body cuando creo el usuario (postUser)--> el q hicimos en clase
-// para los que son byID crear otro que chequee el params (longitud, required, tipo)
-// para el login?
-// para filtrar en los GET hay que validar los query que vienen de los querystrings (a estos no pedirle rquiered! si viene vacio ma trae TODOS)
+// armo otro para los get. a ninguno le pongo required porq lo voy a hacer sobre el query y eso puede venir vacio o el usuario puede usuar cuantos filtros quiera
+// de ahi en mas, el resto de los valores pido lo mismo que para el POST, para que el query siempre pida algo que ya se q era valido cuando se creo el usuario 
+//y no acepte filtros sin sentido
 
-module.exports = usersValidation //, usersValidation2} cuando tenga mas schemas los agrego asi al objeto a exportar
+const usersValidationQuery = Joi.object({
+  firstName: Joi.string().min(1).alphanum(),
+  lastName: Joi.string().min(1).alphanum(),
+  userName: Joi.string().min(3),//Le agrego peticiones. Aunque crea a partir de name y lastname no es alphanum porq agregamos el . y min(3)
+  password: Joi.string().alphanum().min(3).max(10),
+  email: Joi.string().email(),
+  address: Joi.string().regex(/[a-zA-Z0-9-\s]$/),
+  phone: Joi.string().regex(/^\d{3}-\d{3}-\d{7}$/)
+}
+)
+
+const usersValidationParams = Joi.object({
+  userId:Joi.string().length(24)//el params lo uso para los caso que estoy filtrando (GET) o actualizando (PUT) "BY ID" por lo tanto es requerido!
+}
+)
+
+const usersValidationPut = Joi.object({
+  firstName: Joi.string().min(1).alphanum(),
+  lastName: Joi.string().min(1).alphanum(),
+  userName: Joi.string().min(3),
+  password: Joi.string().alphanum().min(3).max(10),
+  email: Joi.string().email(),
+  address: Joi.string().regex(/[a-zA-Z0-9-\s]$/),
+  phone: Joi.string().regex(/^\d{3}-\d{3}-\d{7}$/)
+}
+)
+//el schema del usersValidationPut termina siendo el del query pero lo tengo que usar con la propiedad body en el userRouter y queda como todo cruzado... ver de definir mejor los nombres ...
+
+module.exports = {usersValidationBody, usersValidationQuery ,usersValidationParams, usersValidationPut}

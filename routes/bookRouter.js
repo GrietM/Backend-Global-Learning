@@ -8,17 +8,16 @@ const routes = (Book) => {
   const controller = booksController(Book)
 
   bookRouter.route('/books')
-    .get(controller.getBooks)
-    //.get(validator.params(booksValidationGet),controller.getBooks) --> quise sumar el "booksValidationGet" pero nose bien como hacer el exports o el require...
-    .post(controller.postBook) // ver en google como los ejemplos usan el await cuando arman las validaciones
+    .get(validator.query(booksValidation.booksValidationQuery),controller.getBooks)
+
+    .post(validator.body(booksValidation.booksValidationBody),controller.postBook) // ver en google como los ejemplos usan el await cuando arman las validaciones
 
   bookRouter.route('/books/:bookId')
-    .get(controller.getBookByID)
+    .get(validator.params(booksValidation.booksValidationParams),controller.getBookByID)
 
-    .put(controller.putBookById)
+    .put(validator.params(booksValidation.booksValidationParams),validator.body(booksValidation.booksValidationPut),controller.putBookById)
 
-    .delete(controller.deleteBookById)
-
+    .delete(validator.params(booksValidation.booksValidationParams),controller.deleteBookById)
   return bookRouter
 }
 

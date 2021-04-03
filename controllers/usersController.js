@@ -6,11 +6,17 @@ const usersController = (User) => {
     try {
       const {query} = req
       const response = await User.find(query)
-      //console.log(response)
+      
+      if (response.length == 0){
+      return res.status(404).json({message:'No matches found'})}
+      else{
       return res.json(response) 
+      }
     } 
     catch(err){
-    throw err
+      console.log(err)
+      res.status(500).json({message:"Internal Server Error"})
+      throw err
     }
   }
   
@@ -57,7 +63,9 @@ const usersController = (User) => {
     await user.save()
     return res.status(201).json(user)
     } catch (err) {
-    throw console.log('el error es:' + err)
+      console.log(err)
+      res.status(500).json({message:"Internal Server Error"})
+    throw err
     }
   }
   
@@ -65,11 +73,19 @@ const usersController = (User) => {
   const getUserByID = async(req, res) => {
     try {
       const { params } = req
+      console.log(params)
       const response = await User.findById(params.userId)
-
-      return res.json(response)
+      if(response == null){
+        return res.json({message: "No matches found"})
+      }
+      else{
+        return res.json(response)
+      }
+ 
     }
     catch (err) {
+      console.log(err)
+      res.status(500).json({message:"Internal Server Error"})
       throw err
     }
   }
@@ -105,7 +121,9 @@ const usersController = (User) => {
     return res.status(202).json(response)
   }
   catch (err){
-    throw console.log('el error es:' + err)
+    console.log(err)
+    res.status(500).json({message:"Internal Server Error"})
+    throw err
   }
   }
 
@@ -116,7 +134,9 @@ const usersController = (User) => {
       await User.findByIdAndDelete(params.userId)
       return res.status(202).json({message:'El usuario fue eliminado con éxito'})
     }catch (err) {
-      throw console.log('el error es: ' + err) //probar si esto esta funcionando! 
+      console.log(err)
+      res.status(500).json({message:"Internal Server Error"})
+      throw err
     }}
  
     /// EMPIEZO A ARMAR EL NUEVO ENDPOINT PARA LOGIN
@@ -141,7 +161,7 @@ const usersController = (User) => {
               lastName: foundUser.lastName,
               userName: foundUser.userName
             }
-            const token = jwt.sign(tokenUser, '123456marcela' , {expiresIn: 30});
+            const token = jwt.sign(tokenUser, '123456marcela'); //,{expiresIn: 30}); lo dejo sin expirar para que no em este pidiendo volver a levantarlo todo el tiempo
 
             return res.status(202).json({message:'Login OK', token: token})  
            
@@ -158,6 +178,8 @@ const usersController = (User) => {
          }
          }
       catch (err){
+        console.log(err)
+        res.status(500).json({message:"Internal Server Error"})
         throw err
       }
 

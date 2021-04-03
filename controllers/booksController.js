@@ -3,10 +3,12 @@ const booksController = (Book) => {
     try {
       const {query} = req
       const response = await Book.find(query)
-      
-      console.log(response)
-
-      return res.json(response) 
+      if (response.length == 0){
+        return res.status(202).json({message: 'No matches found'})} 
+      else {
+        return res.json(response) 
+      }
+     
     } 
     catch(err){
     throw err

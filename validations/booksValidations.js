@@ -1,22 +1,28 @@
 const Joi = require ('joi')
 
-const booksValidation = Joi.object({
+const booksValidationBody = Joi.object({
   title: Joi.string().required(),
   author: Joi.string().required(),
   genre: Joi.string().required(),
   read: Joi.boolean().required()
 })
 
-/*const booksValidationGet = Joi.object({
-  title: Joi.string().required(),
-  author: Joi.string().required(),
-  genre: Joi.string().required(),
-  read: Joi.boolean().required()
-})*/
+const booksValidationQuery = Joi.object({
+  title: Joi.string(),
+  author: Joi.string(),
+  genre: Joi.string(),
+  read: Joi.boolean()
+})
 
+const booksValidationParams = Joi.object({
+  bookId: Joi.string().required().length(24)
+})
 
-//ojo , crear un schema para cada tipo de validaciones?
-//esto es get/getbyId/post/put/delete... van a validar cosas diferentes en body, params o query...
-//ver comentarios en usersValidations.js
+const booksValidationPut = Joi.object({
+  title: Joi.string(),
+  author: Joi.string(),
+  genre: Joi.string(),
+  read: Joi.boolean()
+})
 
-module.exports = {booksValidation}//,booksValidationGet}
+module.exports = {booksValidationBody, booksValidationQuery, booksValidationParams, booksValidationPut}//,booksValidationGet}

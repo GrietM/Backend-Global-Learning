@@ -16,7 +16,6 @@ const app = express() // cada vez q use app significa q estoy "consumiendo funci
 // The app object is instantiated on creation of the Express server. It has a middleware stack that can be customized 
 
 //app.all('/api/*', jwt({secret: '123456marcela', algorithms: ['HS256']}).unless({ path: ['/api/user/login'] }))
-//lo dejo desactivado para que no expire todo el tiempo o no me pida authorization
 
 const connectDb = async() => {
   try{
