@@ -11,5 +11,4 @@ db.books.insert([
     author: 'Dan Brown',
     read: true
   }
-  
 ])
