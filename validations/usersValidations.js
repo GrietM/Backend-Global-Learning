@@ -17,13 +17,11 @@ const usersValidationQuery = Joi.object({
   email: Joi.string().email(),
   address: Joi.string().regex(/[a-zA-Z0-9-\s]$/),
   phone: Joi.string().regex(/^\d{3}-\d{3}-\d{7}$/)
-}
-)
+})
 
 const usersValidationParams = Joi.object({
   userId:Joi.string().length(24).required()
-}
-)
+})
 
 const usersValidationPut = Joi.object({
   firstName: Joi.string().min(1).alphanum(),
@@ -33,12 +31,11 @@ const usersValidationPut = Joi.object({
   email: Joi.string().email(),
   address: Joi.string().regex(/[a-zA-Z0-9-\s]$/),
   phone: Joi.string().regex(/^\d{3}-\d{3}-\d{7}$/)
-}
-)
+})
 
 const usersValidationLogin = Joi.object({
   userName: Joi.string().required(),
-  password: Joi.string().required()}
-)
+  password: Joi.string().required()
+})
 
 module.exports = {usersValidationBody, usersValidationQuery ,usersValidationParams, usersValidationPut,usersValidationLogin}

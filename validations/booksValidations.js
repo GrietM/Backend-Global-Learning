@@ -15,7 +15,7 @@ const booksValidationQuery = Joi.object({
 })
 
 const booksValidationParams = Joi.object({
-  bookId: Joi.string().length(24)
+  bookId: Joi.string().length(24).required()
 })
 
 const booksValidationPut = Joi.object({

@@ -27,37 +27,25 @@ const usersController = (User) => {
     
     try {
       const {body} = req
-      const newUserName = () =>{
-        //Separo las palabras ingresadas en el nombre y apellido y las guardo en un arreglo
-        let splitFirstName = body.firstName.split(" ")
-        let splitLastName = body.lastName.split(" ")
-
-        // armo el return extrayendo el primer elemento de cada arreglo y uniendolos con un .
-        if(body.lastName && body.firstName){ //pregunto SI EXISTEN
-           return (splitFirstName[0] + "."+ splitLastName[0])
-        }
-        else{
-          return body.firstName ? splitFirstName[0] : splitLastName[0]
-        }
-        }
-
-     const userObject = 
+      const newUserName = (body.firstName + "."+ body.lastName)
+     
+      const userObject = 
         { ...body,
-          userName: newUserName(),
+          userName: newUserName,
           password: encryptedPsw
         }
        
     const user = new User (userObject)
     await user.save()
     return res.status(201).json(user)
-    } catch (err) {
+    }
+    catch (err) {
       console.log(err)
       res.status(500).json({message:"Internal Server Error"})
     throw err
     }
   }
   
-
   const getUserByID = async(req, res) => {
     try {
       const { params } = req
@@ -87,23 +75,7 @@ const usersController = (User) => {
         },{
           $set: {
             ...body,
-            userName: (() => {if (body.firstName & body.lastName){//primero pregunto si los cargo
-              //Separo las palabras ingresadas en el nombre y apellido y las guardo en un arreglo
-              let splitFirstName = body.firstName.split(" ")
-              let splitLastName = body.lastName.split(" ")
-                             
-              // armo el return extrayendo el primer elemento de cada arreglo y uniendolos con un .
-              if(body.lastName && body.firstName){ //pregunto SI EXISTEN
-               return (splitFirstName[0] + "."+ splitLastName[0])
-              }
-              else{
-              return body.firstName ? splitFirstName[0] : splitLastName[0]
-              }}
-              else{
-                return body.userName
-              }
-
-              })(),
+            userName: (body.firstName + "."+ body.lastName),       
             password: encryptedPsw,
           }
         })
@@ -143,7 +115,7 @@ const usersController = (User) => {
           }
         }
         else{
-          return res.status(202).json({message: 'Invalid user'}) // credenciales invalidas no funciona... 
+          return res.status(202).json({message: 'Invalid user'})
         }
       }
       catch (err){
