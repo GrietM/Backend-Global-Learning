@@ -10,7 +10,7 @@ const routes = (Book) => {
   bookRouter.route('/books')
     .get(validator.query(booksValidation.booksValidationQuery),controller.getBooks)
 
-    .post(validator.body(booksValidation.booksValidationBody),controller.postBook) // ver en google como los ejemplos usan el await cuando arman las validaciones
+    .post(validator.body(booksValidation.booksValidationBody),controller.postBook)
 
   bookRouter.route('/books/:bookId')
     .get(validator.params(booksValidation.booksValidationParams),controller.getBookByID)

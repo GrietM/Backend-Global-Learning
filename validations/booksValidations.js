@@ -25,4 +25,4 @@ const booksValidationPut = Joi.object({
   read: Joi.boolean()
 })
 
-module.exports = {booksValidationBody, booksValidationQuery, booksValidationParams, booksValidationPut}//,booksValidationGet}
+module.exports = {booksValidationBody, booksValidationQuery, booksValidationParams, booksValidationPut}
